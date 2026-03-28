@@ -311,6 +311,38 @@
     }
 }
 
+.livePreview {
+    position: absolute;
+    bottom: calc(100% + 15px);
+    right: 0;
+    width: 250px;
+    background: var(--surface-2);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    pointer-events: none;
+    animation: slideUp 0.3s ease;
+    z-index: 100;
+    line-height: 1.4;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        right: 40px;
+        border: 8px solid transparent;
+        border-top-color: var(--accent);
+    }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .toolBtn {
     display: flex;
     align-items: center;
