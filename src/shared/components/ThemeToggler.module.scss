@@ -1,0 +1,30 @@
+.toggler {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+
+    &:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+        background: var(--accent-dim);
+    }
+}
+
+.icon {
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+.label {
+    font-size: 0.7rem;
+}

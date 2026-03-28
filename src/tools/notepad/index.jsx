@@ -7,44 +7,46 @@ import styles from './notepad.module.scss'
 
 export default function Notepad() {
     const navigate = useNavigate()
-    const { notes, createNote, updateNote, deleteNote } = useNotes()
+    const { notes, createNote, updateNote, deleteNote, togglePin } = useNotes()
     const [activeId, setActiveId] = useState(notes[0]?.id || null)
+    const [search, setSearch] = useState('')
 
     const activeNote = notes.find(n => n.id === activeId) || null
+
+    const filteredNotes = notes.filter(n =>
+        n.title.toLowerCase().includes(search.toLowerCase()) ||
+        n.body?.replace(/<[^>]*>/g, '').toLowerCase().includes(search.toLowerCase())
+    )
 
     const handleCreate = () => {
         const id = createNote()
         setActiveId(id)
+        setSearch('')
     }
 
     const handleDelete = (id) => {
         deleteNote(id)
-        if (activeId === id) setActiveId(notes.find(n => n.id !== id)?.id || null)
+        if (activeId === id) {
+            setActiveId(notes.find(n => n.id !== id)?.id || null)
+        }
     }
 
     return (
         <div className={styles.wrapper}>
-            <button
-                onClick={() => navigate('/')}
-                style={{
-                    position: 'fixed', top: '1.25rem', left: '1.25rem',
-                    background: 'none', border: '1px solid var(--border)',
-                    color: 'var(--text-muted)', fontFamily: 'var(--font-mono)',
-                    fontSize: '0.72rem', padding: '4px 10px', borderRadius: '4px',
-                    cursor: 'pointer', zIndex: 10, letterSpacing: '0.05em'
-                }}
-            >
-                ← home
-            </button>
+
 
             <NoteList
-                notes={notes}
+                notes={filteredNotes}
                 activeId={activeId}
                 onSelect={setActiveId}
                 onCreate={handleCreate}
                 onDelete={handleDelete}
+                onPin={togglePin}
+                search={search}
+                onSearch={setSearch}
             />
-            <NoteEditor note={activeNote} onUpdate={updateNote} />
+
+            <NoteEditor note={activeNote} onUpdate={updateNote} onHome={() => navigate('/')} />
         </div>
     )
 }

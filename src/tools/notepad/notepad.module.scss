@@ -3,7 +3,10 @@
     height: 100vh;
     background: var(--bg);
     font-family: var(--font-mono);
+    position: relative;
 }
+
+
 
 // ── Sidebar ──────────────────────────────────────
 .sidebar {
@@ -42,11 +45,36 @@
     cursor: pointer;
     display: grid;
     place-items: center;
-    line-height: 1;
     transition: opacity 0.15s;
 
     &:hover {
-        opacity: 0.85;
+        opacity: 0.8;
+    }
+}
+
+.searchWrap {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.searchInput {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+
+    &::placeholder {
+        color: var(--text-muted);
+    }
+
+    &:focus {
+        border-color: var(--accent);
     }
 }
 
@@ -64,8 +92,7 @@
 }
 
 .noteItem {
-    position: relative;
-    padding: 0.85rem 1rem;
+    padding: 0.75rem 0.85rem;
     border-radius: 4px;
     cursor: pointer;
     display: flex;
@@ -75,16 +102,23 @@
 
     &:hover {
         background: var(--surface-2);
-    }
 
-    &:hover .deleteBtn {
-        opacity: 1;
+        .noteActions {
+            opacity: 1;
+        }
     }
 
     &.active {
         background: var(--accent-dim);
         border-left: 2px solid var(--accent);
     }
+}
+
+.noteItemTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
 }
 
 .noteTitle {
@@ -94,6 +128,11 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
+}
+
+.pinDot {
+    font-size: 0.7rem;
 }
 
 .noteSnippet {
@@ -104,32 +143,225 @@
     text-overflow: ellipsis;
 }
 
-.deleteBtn {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
+.noteActions {
+    display: flex;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.actionBtn {
     background: none;
     border: none;
     color: var(--text-muted);
-    font-size: 1rem;
+    font-size: 0.9rem;
     cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.15s, color 0.15s;
-    padding: 2px 6px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    transition: color 0.15s, background 0.15s;
 
     &:hover {
-        color: #ff4444;
+        color: var(--text);
+        background: var(--border);
+    }
+
+    &.pinned {
+        color: var(--accent);
+        opacity: 1 !important;
     }
 }
 
-// ── Editor ───────────────────────────────────────
+// ── Editor Area ───────────────────────────────────
+.editorWrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+// ── Toolbar ───────────────────────────────────────
+.toolbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    transition: background 0.25s ease;
+    user-select: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.toolRow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+        gap: 0.25rem;
+    }
+}
+
+.toolGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    height: 38px;
+
+    @media (max-width: 600px) {
+        .toolLabel {
+            display: none;
+        }
+    }
+}
+
+.toolLabel {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-right: 0.25rem;
+    padding-left: 0.5rem;
+    border-right: 1px solid var(--border);
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.btnRow {
+    display: flex;
+    gap: 2px;
+}
+
+.toolSelect {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0 0.5rem;
+    outline: none;
+    cursor: pointer;
+    max-width: 100px;
+    height: 100%;
+
+    &:focus {
+        color: var(--accent);
+    }
+
+    option {
+        background: var(--surface);
+        color: var(--text);
+    }
+}
+
+.toolBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    padding: 0 8px;
+    height: 28px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    svg {
+        flex-shrink: 0;
+    }
+
+    span {
+        @media (max-width: 1024px) {
+            display: none;
+        }
+    }
+
+    &:hover {
+        color: var(--accent);
+        background: var(--accent-dim);
+    }
+
+    &.active {
+        color: var(--accent);
+        background: var(--accent-dim);
+        border-color: var(--accent);
+    }
+
+    &.recording {
+        color: var(--accent);
+        background: var(--accent-dim);
+        border-color: var(--accent);
+        animation: pulse mic-pulse 1.5s infinite;
+    }
+}
+
+@keyframes mic-pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+}
+
+.divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+    margin: 0 4px;
+}
+
+.colorRow {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding: 0 0.5rem;
+}
+
+.colorSwatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.15s;
+
+    &:hover {
+        transform: scale(1.15);
+        border-color: var(--text);
+    }
+
+    &.active {
+        border-color: var(--accent);
+        transform: scale(1.1);
+    }
+}
+
+.toolbarSpacer {
+    flex: 1;
+
+    @media (max-width: 600px) {
+        display: none;
+    }
+}
+
+
+// ── Editor ────────────────────────────────────────
 .editor {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 2.5rem 3rem;
-    gap: 1.5rem;
+    padding: 2rem 3rem;
+    gap: 1rem;
+    overflow-y: auto;
 }
 
 .titleInput {
@@ -141,6 +373,7 @@
     font-weight: 800;
     color: var(--text);
     letter-spacing: -0.02em;
+    width: 100%;
 
     &::placeholder {
         color: var(--border);
@@ -149,17 +382,37 @@
 
 .bodyInput {
     flex: 1;
-    background: none;
-    border: none;
     outline: none;
     font-family: var(--font-mono);
     font-size: 0.9rem;
     color: var(--text);
-    line-height: 1.8;
-    resize: none;
+    line-height: 1.9;
+    min-height: 300px;
 
-    &::placeholder {
+    // Placeholder via data attribute
+    &:empty::before {
+        content: attr(data-placeholder);
         color: var(--text-muted);
+        pointer-events: none;
+    }
+
+    // Rich text styles within editor
+    b,
+    strong {
+        font-weight: 700;
+    }
+
+    i,
+    em {
+        font-style: italic;
+    }
+
+    u {
+        text-decoration: underline;
+    }
+
+    s {
+        text-decoration: line-through;
     }
 }
 
@@ -169,4 +422,17 @@
     place-items: center;
     color: var(--text-muted);
     font-size: 0.8rem;
+    font-family: var(--font-mono);
+}
+
+// ── Status Bar ────────────────────────────────────
+.statusBar {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.5rem 1.5rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
 }

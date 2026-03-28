@@ -19,7 +19,13 @@ export function useNotes() {
     }, [notes])
 
     const createNote = () => {
-        const note = { id: getId(), title: 'Untitled', body: '', createdAt: Date.now() }
+        const note = {
+            id: getId(),
+            title: 'Untitled',
+            body: '',
+            pinned: false,
+            createdAt: Date.now(),
+        }
         setNotes(prev => [note, ...prev])
         return note.id
     }
@@ -32,5 +38,15 @@ export function useNotes() {
         setNotes(prev => prev.filter(n => n.id !== id))
     }
 
-    return { notes, createNote, updateNote, deleteNote }
+    const togglePin = (id) => {
+        setNotes(prev => {
+            const updated = prev.map(n => n.id === id ? { ...n, pinned: !n.pinned } : n)
+            return [
+                ...updated.filter(n => n.pinned),
+                ...updated.filter(n => !n.pinned),
+            ]
+        })
+    }
+
+    return { notes, createNote, updateNote, deleteNote, togglePin }
 }

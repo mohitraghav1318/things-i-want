@@ -1,11 +1,20 @@
 import styles from '../notepad.module.scss'
 
-export default function NoteList({ notes, activeId, onSelect, onCreate, onDelete }) {
+export default function NoteList({ notes, activeId, onSelect, onCreate, onDelete, onPin, search, onSearch }) {
     return (
         <aside className={styles.sidebar}>
             <div className={styles.sidebarHeader}>
                 <span className={styles.sidebarTitle}>Notes</span>
                 <button className={styles.newBtn} onClick={onCreate}>+</button>
+            </div>
+
+            <div className={styles.searchWrap}>
+                <input
+                    className={styles.searchInput}
+                    placeholder="Search notes..."
+                    value={search}
+                    onChange={e => onSearch(e.target.value)}
+                />
             </div>
 
             <div className={styles.noteList}>
@@ -18,18 +27,27 @@ export default function NoteList({ notes, activeId, onSelect, onCreate, onDelete
                         className={`${styles.noteItem} ${note.id === activeId ? styles.active : ''}`}
                         onClick={() => onSelect(note.id)}
                     >
-                        <span className={styles.noteTitle}>
-                            {note.title || 'Untitled'}
-                        </span>
+                        <div className={styles.noteItemTop}>
+                            <span className={styles.noteTitle}>
+                                {note.pinned && <span className={styles.pinDot}>📌 </span>}
+                                {note.title || 'Untitled'}
+                            </span>
+                            <div className={styles.noteActions}>
+                                <button
+                                    className={`${styles.actionBtn} ${note.pinned ? styles.pinned : ''}`}
+                                    onClick={e => { e.stopPropagation(); onPin(note.id) }}
+                                    title="Pin"
+                                >⊕</button>
+                                <button
+                                    className={styles.actionBtn}
+                                    onClick={e => { e.stopPropagation(); onDelete(note.id) }}
+                                    title="Delete"
+                                >×</button>
+                            </div>
+                        </div>
                         <span className={styles.noteSnippet}>
-                            {note.body?.slice(0, 50) || 'Empty note'}
+                            {note.body?.replace(/<[^>]*>/g, '').slice(0, 55) || 'Empty note'}
                         </span>
-                        <button
-                            className={styles.deleteBtn}
-                            onClick={e => { e.stopPropagation(); onDelete(note.id) }}
-                        >
-                            ×
-                        </button>
                     </div>
                 ))}
             </div>
