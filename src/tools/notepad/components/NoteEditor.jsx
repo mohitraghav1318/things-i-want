@@ -3,8 +3,9 @@ import styles from '../notepad.module.scss'
 import Toolbar from './Toolbar'
 import { useEditorStats } from '../hooks/useEditorStats'
 
-export default function NoteEditor({ note, onUpdate, onHome }) {
+export default function NoteEditor({ note, onUpdate, onHome, onBack }) {
     const editorRef = useRef()
+
     const { words, chars } = useEditorStats(note?.body || '')
 
     // Sync content when note changes
@@ -43,7 +44,8 @@ export default function NoteEditor({ note, onUpdate, onHome }) {
 
     return (
         <div className={styles.editorWrap}>
-            <Toolbar onDownload={handleDownload} onHome={onHome} />
+            <Toolbar onDownload={handleDownload} onHome={onHome} onBack={onBack} />
+
 
             <div className={styles.editor}>
                 <input

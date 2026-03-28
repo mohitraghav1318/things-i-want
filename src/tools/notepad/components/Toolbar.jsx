@@ -26,7 +26,8 @@ const exec = (cmd, val = null) => {
     document.execCommand(cmd, false, val)
 }
 
-export default function Toolbar({ onDownload, onHome }) {
+export default function Toolbar({ onDownload, onHome, onBack }) {
+
     const [isRecording, setIsRecording] = useState(false)
     const [recognition, setRecognition] = useState(null)
 
@@ -81,6 +82,12 @@ export default function Toolbar({ onDownload, onHome }) {
     return (
         <div className={styles.toolbar}>
             <div className={styles.toolRow}>
+
+                {/* Back Button (Mobile Only) */}
+                <button className={styles.mobileBack} onClick={onBack} title="Back to List">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+
 
                 {/* Home Button */}
                 <button className={styles.toolBtn} onClick={onHome} title="Return Home" style={{ marginRight: '0.25rem' }}>

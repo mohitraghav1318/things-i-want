@@ -5,8 +5,18 @@ export default function NoteList({ notes, activeId, onSelect, onCreate, onDelete
         <aside className={styles.sidebar}>
             <div className={styles.sidebarHeader}>
                 <span className={styles.sidebarTitle}>Notes</span>
-                <button className={styles.newBtn} onClick={onCreate}>+</button>
+                <div className={styles.sidebarActions}>
+                    <button 
+                        className={styles.mobileCollapse} 
+                        onClick={() => notes[0] && onSelect(activeId || notes[0].id)}
+                        title="Hide List"
+                    >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    </button>
+                    <button className={styles.newBtn} onClick={onCreate}>+</button>
+                </div>
             </div>
+
 
             <div className={styles.searchWrap}>
                 <input

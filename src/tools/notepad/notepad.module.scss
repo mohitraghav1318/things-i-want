@@ -4,7 +4,30 @@
     background: var(--bg);
     font-family: var(--font-mono);
     position: relative;
+    overflow: hidden;
+
+    @media (max-width: 768px) {
+        &[data-view="editor"] {
+            .sidebar {
+                display: none;
+            }
+            .editorWrap {
+                display: flex;
+                width: 100%;
+            }
+        }
+        &[data-view="list"] {
+            .sidebar {
+                display: flex;
+                width: 100%;
+            }
+            .editorWrap {
+                display: none;
+            }
+        }
+    }
 }
+
 
 
 
@@ -31,6 +54,34 @@
     font-size: 1rem;
     font-weight: 700;
     color: var(--text);
+}
+
+.sidebarActions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mobileCollapse {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+
+    @media (max-width: 768px) {
+        display: flex;
+    }
+
+    &:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+    }
 }
 
 .newBtn {
@@ -352,6 +403,31 @@
         display: none;
     }
 }
+
+.mobileBack {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 0.25rem;
+
+    @media (max-width: 768px) {
+        display: flex;
+    }
+
+    &:hover {
+        background: var(--accent-dim);
+        color: var(--accent);
+        border-color: var(--accent);
+    }
+}
+
 
 
 // ── Editor ────────────────────────────────────────

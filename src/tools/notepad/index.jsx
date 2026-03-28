@@ -8,7 +8,11 @@ import styles from './notepad.module.scss'
 export default function Notepad() {
     const navigate = useNavigate()
     const { notes, createNote, updateNote, deleteNote, togglePin } = useNotes()
-    const [activeId, setActiveId] = useState(notes[0]?.id || null)
+    const [activeId, setActiveId] = useState(() => {
+        if (typeof window !== 'undefined' && window.innerWidth < 768) return null
+        return notes[0]?.id || null
+    })
+
     const [search, setSearch] = useState('')
 
     const activeNote = notes.find(n => n.id === activeId) || null
@@ -32,7 +36,8 @@ export default function Notepad() {
     }
 
     return (
-        <div className={styles.wrapper}>
+        <div className={styles.wrapper} data-view={activeId ? 'editor' : 'list'}>
+
 
 
             <NoteList
@@ -46,7 +51,13 @@ export default function Notepad() {
                 onSearch={setSearch}
             />
 
-            <NoteEditor note={activeNote} onUpdate={updateNote} onHome={() => navigate('/')} />
+            <NoteEditor 
+                note={activeNote} 
+                onUpdate={updateNote} 
+                onHome={() => navigate('/')} 
+                onBack={() => setActiveId(null)}
+            />
+
         </div>
     )
 }
